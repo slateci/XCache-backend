@@ -1,12 +1,12 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: xcache-backend
+  name: xcache-network
   namespace: xcache
   annotations:
     external-dns.alpha.kubernetes.io/hostname: atlas.xcache.org
   labels:
-    k8s-app: xcache-backend
+    k8s-app: xcache-network
 spec:
   type: LoadBalancer
   ports:
@@ -19,28 +19,28 @@ spec:
     port: 80
     targetPort: 80
   selector:
-    k8s-app: xcache-backend
+    k8s-app: xcache-network
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: xcache-backend  
+  name: xcache-network  
   namespace: xcache
   labels:
-    k8s-app: xcache-backend
+    k8s-app: xcache-network
 spec:
   replicas: 1
   selector:
     matchLabels:
-      k8s-app: xcache-backend
+      k8s-app: xcache-network
   template:
     metadata:
       labels:
-        k8s-app: xcache-backend
+        k8s-app: xcache-network
     spec:
       containers:
-      - name: xcache-backend
-        image: slateci/xcache-backend:latest
+      - name: xcache-network
+        image: slateci/xcache-network:latest
         ports:
           - containerPort: 443
           - containerPort: 80

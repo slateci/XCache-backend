@@ -253,7 +253,7 @@ app.get('/stress_test/', async function (req, res) {
 });
 
 app.get('/stress_result/:_id/:status/:duration', function (req, res) {
-    req.params.host = req.hostname;
+    req.params.host = req.connection.remoteAddress;
     console.log('stress result', req.params);
     es.add_stress_result(req.params);
     res.status(200).send('OK');
