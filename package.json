@@ -10,9 +10,12 @@
   "author": "Ilija Vukotic",
   "license": "ISC",
   "dependencies": {
-    "elasticsearch": "^15.1.1",
-    "express": "^4.16.3",
+    "body-parser": "^1.18.3",
+    "elasticsearch": "^15.2.0",
+    "express": "^4.16.4",
     "fs": "0.0.1-security",
+    "http": "0.0.0",
+    "https": "^1.0.0",
     "math.js": "^1.1.43",
     "npm": "^6.4.1"
   },

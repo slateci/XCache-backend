@@ -206,7 +206,7 @@ module.exports = class Elastic {
         for (var i = 0, len = this.stress_results.length; i < len; i++) {
             var res = this.stress_results.pop();
             docs.body.push({ update: { _index: config.STRESS_INDEX, _type: 'docs', _id: res._id } });
-            docs.body.push({ doc: { rate: res.rate, status: res.status, updated_at: new Date().getTime() } });
+            docs.body.push({ doc: { host: res.host, duration: res.duration, status: res.status, updated_at: new Date().getTime() } });
         }
         try {
             await this.es.bulk(docs);

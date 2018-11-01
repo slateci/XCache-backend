@@ -30,7 +30,10 @@ curl -XPOST  'atlas-kibana.mwt2.org:9200/_template/stress' -d '{
           "origin": {
             "type": "keyword"
           },
-          "rate": {
+          "host": {
+            "type": "keyword"
+          },
+          "duration": {
             "type": "float"
           }
         }

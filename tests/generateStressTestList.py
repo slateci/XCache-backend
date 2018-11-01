@@ -31,6 +31,7 @@ my_query = {
 rc = ReplicaClient()
 
 USsites = ['MWT2', 'AGLT2', 'BNL-OSG2', 'SWT2_CPB', 'SLACXRD']
+USsites = ['AGLT2', 'MWT2']
 exclude = ['RO-07-NIPNE', 'UNI-FREIBURG', 'TOKYO-LCG2', 'TOKYO-LCG2_LOCALGROUPDISK', 'GOEGRID', 'TAIWAN-LCG2',
            'INFN-COSENZA', 'INFN-MILANO-ATLASC', 'INFN-NAPOLI-ATLAS', 'JINR-LCG2',
            'RRC-KI-T1', 'AUSTRALIA-ATLAS', 'BEIJING-LCG2', 'INFN-ROMA1', 'PRAGUELCG2', 'UAM-LCG2']
@@ -51,7 +52,7 @@ for res in scroll:
             path = i['rses'][r][0]
             origin = r.replace('_DATADISK', '')
             # print(origin)
-            if (co == 0 or origin in USsites) and origin not in exclude:
+            if (co == 0 and origin in USsites):  # and origin not in exclude:
                 print(i['rses'][r][0])
                 requests.append({
                     "_index": "stress",

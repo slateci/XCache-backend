@@ -252,9 +252,9 @@ app.get('/stress_test/', async function (req, res) {
     res.json(sfile);
 });
 
-app.get('/stress_result/:_id/:status/:rate', function (req, res) {
-    console.log('stress result');
-    console.log(req.params);
+app.get('/stress_result/:_id/:status/:duration', function (req, res) {
+    req.params.host = req.hostname;
+    console.log('stress result', req.params);
     es.add_stress_result(req.params);
     res.status(200).send('OK');
 });
