@@ -247,8 +247,10 @@ app.delete('/server/:server_id', async function (req, res) {
 });
 
 app.get('/stress_test/', async function (req, res) {
-    console.log('stress file requested');
-    sfile = await es.get_stress_file();
+    // optional parameters are ?test=testX&origin=siteX
+    params = { 'testName': req.query.test, 'origin': req.query.origin, 'client': req.connection.remoteAddress };
+    console.log('stress file requested', params);
+    sfile = await es.get_stress_file(params);
     res.json(sfile);
 });
 
@@ -259,10 +261,13 @@ app.get('/stress_result/:_id/:status/:duration', function (req, res) {
     res.status(200).send('OK');
 });
 
+app.get('/wipe_results', async function (req, res) {
+    es.wipe_results();
+    res.status(200).send('OK');
+});
 
 app.get('/wipe', async function (req, res) {
-    console.log('WIPING all caches!!!');
-    // loop over sites and servers in server_set and wipe them.
+    es.wipe();
     res.status(200).send('OK');
 });
 

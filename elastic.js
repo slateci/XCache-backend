@@ -2,15 +2,15 @@ var elasticsearch = require('elasticsearch');
 const server = require('./server.js');
 const site = require('./site.js');
 
-var config = require('/etc/backend-conf/config.json');
-// var config = {
-//     SITENAME: "xcache.org",
-//     ELASTIC_HOST: "atlas-kibana.mwt2.org:9200",
-//     SERVERS_INDEX: "xc_servers",
-//     REQUESTS_INDEX: "xc_requests",
-//     STRESS_INDEX: "stress",
-//     SIMULATION: true
-// };
+// var config = require('/etc/backend-conf/config.json');
+var config = {
+    SITENAME: "xcache.org",
+    ELASTIC_HOST: "atlas-kibana.mwt2.org:9200",
+    SERVERS_INDEX: "xc_servers",
+    REQUESTS_INDEX: "xc_requests",
+    STRESS_INDEX: "stress",
+    SIMULATION: true
+};
 
 
 module.exports = class Elastic {
@@ -142,16 +142,36 @@ module.exports = class Elastic {
         return server_tree;
     };
 
-    async get_stress_file() {
+    async get_stress_file(params) {
+
         if (this.stress_requests.length == 0) {
             await this.load_stress_files();
         }
-        var sf = this.stress_requests.shift();
-        this.update_stress_file(sf, 'processing');
-        return sf;
+        if (this.stress_requests.length == 0) {
+            return { 'info': 'No more unused files. Please add more files to the database.' }
+        }
+        var sf = null;
+        if (params.origin !== 'undefined') {
+            for (const i of this.stress_requests) {
+                if (i['origin'] == params.origin) {
+                    sf = i;
+                    console.log(sf);
+                    break;
+                }
+            }
+        } else {
+            sf = this.stress_requests.shift();
+        }
+        if (sf) {
+            this.update_stress_file(sf, 'processing', params);
+            return sf;
+        }
+        else {
+            return { 'info': 'No more unused files.' };
+        }
     }
 
-    async load_stress_files(nfiles = 50) {
+    async load_stress_files(nfiles = 5000) {
         console.log("loading batch of stress paths ...");
         try {
             const response = await this.es.search({
@@ -191,11 +211,15 @@ module.exports = class Elastic {
         }
     };
 
-    async update_stress_file(sf, newstatus) {
+    async update_stress_file(sf, newstatus, params) {
         // console.log("updating stress file:", sf);
+        var doc = { status: newstatus, host: params.client, updated_at: new Date().getTime() }
+        if (params.testName !== 'undefined') {
+            doc['test'] = params.testName;
+        }
         this.es.update({
             index: config.STRESS_INDEX, type: 'docs', id: sf._id,
-            body: { doc: { status: newstatus, updated_at: new Date().getTime() } }
+            body: { doc: doc }
         });
     };
 
@@ -216,6 +240,44 @@ module.exports = class Elastic {
         console.log("Done.");
     };
 
+    async wipe_results() {
+        console.log("wiping all results...");
+        try {
+            await this.es.updateByQuery({
+                index: "stress",
+                type: "docs",
+                body: {
+                    "query": {
+                        "match_all": {}
+                    },
+                    "script": {
+                        "source": "ctx._source['status'] = 'in queue'"
+                    }
+                }
+            });
+        } catch (err) {
+            console.error(err)
+        }
+        console.log("Done.");
+    }
+
+    async wipe() {
+        console.log("wiping all records...");
+        try {
+            await this.es.deleteByQuery({
+                index: "stress",
+                type: "docs",
+                body: {
+                    "query": {
+                        "match_all": {}
+                    }
+                }
+            });
+        } catch (err) {
+            console.error(err)
+        }
+        console.log("Done.");
+    }
 }
 
 
