@@ -6,26 +6,20 @@ import pandas as pd
 # SITE selects site whose historical accesses will be replayed.
 
 SITE = 'BNL-OSG2'
-#SITE = 'MWT2'
-# SITE = 'SLACXRD'
 
-# where is the client - important for proxied sites.
-CLIENT_AT = 'BNL-OSG2'
-#CLIENT_AT = 'MWT2'
-#CLIENT_AT = 'SLACXRD'
 
 USsites = ['MWT2', 'AGLT2', 'BNL-OSG2', 'SWT2_CPB', 'SLACXRD']
 USsites = ['MWT2', 'AGLT2', 'SWT2_CPB', 'SLACXRD']
-# USsites = ['AGLT2', 'MWT2']
-USsites = ['BNL-OSG2']
+USsites = ['MWT2', 'BNL-OSG2', 'AGLT2']
+#USsites = ['MWT2']
 exclude = ['RO-07-NIPNE', 'UNI-FREIBURG', 'TOKYO-LCG2', 'TOKYO-LCG2_LOCALGROUPDISK', 'GOEGRID', 'TAIWAN-LCG2',
            'INFN-COSENZA', 'INFN-MILANO-ATLASC', 'INFN-NAPOLI-ATLAS', 'JINR-LCG2',
            'RRC-KI-T1', 'AUSTRALIA-ATLAS', 'BEIJING-LCG2', 'INFN-ROMA1', 'PRAGUELCG2', 'UAM-LCG2']
 
 es = Elasticsearch(['atlas-kibana.mwt2.org:9200'], timeout=60)
 
-start_date = '2019-02-01 00:00:00'
-end_date = '2019-03-01 00:00:00'
+start_date = '2019-03-01 00:00:00'
+end_date = '2019-04-01 00:00:00'
 
 print("start:", start_date, "end:", end_date)
 start = int(pd.Timestamp(start_date).timestamp())
@@ -67,7 +61,7 @@ for res in scroll:
     filen = r['filename']
     files = r['filesize']
     times = r['time_start'] * 1000
-    gen = rc.list_replicas(dids=[{'scope': scope, 'name': filen}], schemes=['root'], client_location={'site': CLIENT_AT})
+    gen = rc.list_replicas(dids=[{'scope': scope, 'name': filen}], schemes=['root'], client_location={'site': 'BNL-OSG2'})
     for i in gen:
         co = 0
         for r in i['rses']:

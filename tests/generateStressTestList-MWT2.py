@@ -81,6 +81,7 @@ for res in scroll:
                         "filesize": files,
                         "timestamp": times,
                         "status": "in queue",
+                        "adler32": i["adler32"],
                         "origin": origin
                     }
                 })
