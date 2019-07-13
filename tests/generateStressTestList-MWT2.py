@@ -63,6 +63,8 @@ for res in scroll:
     gen = rc.list_replicas(dids=[{'scope': scope, 'name': filen}], schemes=['root'], client_location={'site': 'MWT2'})
     for i in gen:
         co = 0
+        if 'rses' not in i:
+            continue
         for r in i['rses']:
             path = i['rses'][r][0]
             origin = r.replace('_DATADISK', '')

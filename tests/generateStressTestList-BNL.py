@@ -63,6 +63,8 @@ for res in scroll:
     times = r['time_start'] * 1000
     gen = rc.list_replicas(dids=[{'scope': scope, 'name': filen}], schemes=['root'], client_location={'site': 'BNL-OSG2'})
     for i in gen:
+        if 'rses' not in i:
+            continue
         co = 0
         for r in i['rses']:
             path = i['rses'][r][0]

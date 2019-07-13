@@ -15,6 +15,9 @@ curl -XPOST  'atlas-kibana.mwt2.org:9200/_template/stress' -d '{
           "path": {
             "type": "keyword"
           },
+          "adler32": {
+            "type": "keyword"
+          },
           "filesize": {
             "type": "long"
           },
