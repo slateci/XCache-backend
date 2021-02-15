@@ -1,3 +1,5 @@
+# This is a production level code
+# only algo3 implemented (in a separate module)
 import random
 from XCache import ServerPlacement
 import time

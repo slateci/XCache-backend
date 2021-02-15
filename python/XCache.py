@@ -8,11 +8,11 @@ class ServerPlacement():
     def __init__(this, servers):
         this.servers = servers
         this.fraction = []
-        this.ranges=[]
+        this.ranges = []
         this.calculateFractions()
 
     def calculateFractions(this):
-        print('Initializing. Servers:', this.servers )
+        print('Initializing. Servers:', this.servers)
         res = [[(0, Fraction(1, 1))]]  # server index, fraction
         for i in range(1, this.servers):
             rn = []
@@ -56,7 +56,7 @@ class ServerPlacement():
             res.append(r)
 
         ul = 0
-        f=res[-1]
+        f = res[-1]
         for i in f:
             ul += i[1]
             this.ranges.append([i[0], ul])
